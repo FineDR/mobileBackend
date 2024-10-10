@@ -1,4 +1,18 @@
 import django_heroku
+import os
+
+# Email settings (example using Gmail)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'finesawa36@gmail.com'
+EMAIL_HOST_PASSWORD = 'sawa@@123'
+DEFAULT_FROM_EMAIL = 'finaldeveloper20@gmail.com'
+
+
+SITE_ID = 1
+
 """
 Django settings for backend project.
 
@@ -42,6 +56,7 @@ INSTALLED_APPS = [
     'mobile_',  # Make sure this is a valid app name in your project
     'rest_framework.authtoken',
     'corsheaders',
+    'django.contrib.sites',
     # Add other app names here
 ]
 
@@ -62,7 +77,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,7 +142,6 @@ CORS_ALLOW_ALL_ORIGINS = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
        'rest_framework.authentication.TokenAuthentication',
