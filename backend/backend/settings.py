@@ -69,10 +69,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DB_NAME', 'postgres'),
-        'USER': os.environ.get('DB_USER', 'postgres_user'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'your-password'),
-        'HOST': os.environ.get('DB_HOST', 'db-host'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'USER': os.environ.get('DB_USER', 'postgres.yipadqrauctbnbdbnmxu'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'mlekwa@@123'),
+        'HOST': os.environ.get('DB_HOST', 'aws-0-us-east-1.pooler.supabase.com'),
+        'PORT': os.environ.get('DB_PORT', '6543'),
         'OPTIONS': {
             'sslmode': 'require',
         },
