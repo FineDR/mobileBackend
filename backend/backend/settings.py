@@ -145,4 +145,4 @@ LOGGING = {
 }
 
 # Port binding for Render
-PORT = os.environ.get('PORT', '8000')
+# PORT = os.environ.get('PORT', '8000')
