@@ -31,10 +31,10 @@ INSTALLED_APPS = [
 # Middleware definition
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For serving static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # For handling CORS
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -62,6 +62,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
+# Custom user model
 AUTH_USER_MODEL = 'mobile_.User'
 
 # Database configuration
@@ -112,7 +113,7 @@ CORS_ALLOW_HEADERS = list(default_headers) + ['content-disposition']
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # For serving static files with WhiteNoise
 
 # Media files
 MEDIA_URL = '/media/'
@@ -124,8 +125,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        # Uncomment when authentication is needed
-        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.AllowAny',  # Update permissions as needed
     ],
 }
 
@@ -148,3 +148,14 @@ LOGGING = {
         },
     },
 }
+
+# Ensure root URL is handled correctly (optional)
+# Add this to the root `urls.py` to avoid "Not Found" error
+# from django.http import HttpResponse
+# def index(request):
+#     return HttpResponse("Welcome to the Backend API")
+
+# urlpatterns = [
+#     path('', index),
+#     # Other URL patterns
+# ]
