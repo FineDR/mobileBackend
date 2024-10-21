@@ -1,18 +1,19 @@
 import os
 from pathlib import Path
 from corsheaders.defaults import default_headers
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-default-secret-key')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'default-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-# Allowed hosts for deployment
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,mobilebackend-oj3w.onrender.com').split(",")
+# Allowed hosts configuration
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost mobilebackend-oj3w.onrender.com').split()
 
 # Application definition
 INSTALLED_APPS = [
@@ -24,17 +25,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'mobile_',
+    'mobile_',  # Custom app
     'rest_framework.authtoken',
 ]
 
 # Middleware definition
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For serving static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static file handling in production
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # For handling CORS
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -43,7 +44,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 
-# Template configuration
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -69,14 +69,14 @@ AUTH_USER_MODEL = 'mobile_.User'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', 'postgres'),
+        'NAME': os.environ.get('DB_NAME', 'postgres'),  # Database name
         'USER': os.environ.get('DB_USER', 'postgres.yipadqrauctbnbdbnmxu'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'mlekwa@@123'),
         'HOST': os.environ.get('DB_HOST', 'aws-0-us-east-1.pooler.supabase.com'),
         'PORT': os.environ.get('DB_PORT', '6543'),
         'OPTIONS': {
             'sslmode': 'require',
-        }
+        },
     }
 }
 
@@ -103,21 +103,30 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# CORS configuration
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = [
-    "https://mobilebackend-oj3w.onrender.com",
-]
-CORS_ALLOW_HEADERS = list(default_headers) + ['content-disposition']
-
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # For serving static files with WhiteNoise
+
+if not DEBUG:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+else:
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# CORS configuration
+CORS_ALLOWED_ORIGINS = [
+    "https://mobilebackend-oj3w.onrender.com",
+]
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'content-disposition',
+]
+CORS_ALLOW_ALL_ORIGINS = DEBUG  # Allow all origins only in development
 
 # Django REST Framework configuration
 REST_FRAMEWORK = {
@@ -125,12 +134,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # Update permissions as needed
+        # Uncomment if authentication is required
+        # 'rest_framework.permissions.IsAuthenticated',
     ],
 }
-
-# Default primary key field type
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Logging configuration
 LOGGING = {
@@ -144,18 +151,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': os.environ.get('DJANGO_LOG_LEVEL', 'DEBUG' if DEBUG else 'INFO'),
         },
     },
 }
-
-# Ensure root URL is handled correctly (optional)
-# Add this to the root `urls.py` to avoid "Not Found" error
-# from django.http import HttpResponse
-# def index(request):
-#     return HttpResponse("Welcome to the Backend API")
-
-# urlpatterns = [
-#     path('', index),
-#     # Other URL patterns
-# ]
