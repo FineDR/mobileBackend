@@ -1,6 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager,PermissionsMixin
 from django.conf import settings
+from django.db import models
+
+
 
 
 class UserManager(BaseUserManager):
@@ -12,8 +15,8 @@ class UserManager(BaseUserManager):
         
         email = self.normalize_email(email)
         user = self.model(email=email, fullname=fullname)
-        user.set_password(password)  # Sets the password securely
-        user.save(using=self._db)  # Save user to the database
+        user.set_password(password)
+        user.save(using=self._db)
         return user
 
     def create_superuser(self, email, fullname, password=None):
@@ -21,34 +24,28 @@ class UserManager(BaseUserManager):
         user.is_admin = True
         user.is_staff = True
         user.is_superuser = True
-        user.is_active = True  # Ensure superuser is active by default
+        user.is_active = True
         user.save(using=self._db)
         return user
 
-
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
+    id = models.AutoField(primary_key=True)
+    email = models.EmailField(unique=True)
     fullname = models.CharField(max_length=255)
-    email = models.EmailField(unique=True, max_length=255)
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    
+    is_admin = models.BooleanField(default=False)
+
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'  # Use email as the username for authentication
-    REQUIRED_FIELDS = ['fullname']  # 'fullname' is required in addition to email
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['fullname']
 
     def __str__(self):
         return self.email
 
-    def has_perm(self, perm, obj=None):
-        return self.is_admin  # Admin users have all permissions
-
-    def has_module_perms(self, app_label):
-        return True  # Admin users have permissions to view all apps
-
-
+    class Meta:
+        app_label = 'mobile_'  # Ensure this matches your app name
 
 class Message(models.Model):
     id = models.AutoField(primary_key=True)  # Auto-generated ID
@@ -77,13 +74,7 @@ class TransactionDetails(models.Model):
         return f"Transaction {self.transactionId} by {self.sender}"
     
     
-class Category(models.Model):
-    category_id = models.AutoField(primary_key=True)  # AutoField for auto-incrementing ID
-    category_name = models.CharField(max_length=255)  # Field for category name
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,  # ForeignKey to the custom User model
-        on_delete=models.CASCADE  # Delete category if the user is deleted
-    )
 
-    def __str__(self):
-        return f"{self.category_name} by {self.user.fullname}"  # String representation
+class Category(models.Model):
+    category_name = models.CharField(max_length=255)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
