@@ -24,5 +24,5 @@ def home(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
      path('', home), 
-    path('', include('mobile_.urls')),  # include the correct path to your app's URLs
+    path('mobile/', include('mobile_.urls')),  # include the correct path to your app's URLs
 ]
