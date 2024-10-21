@@ -13,7 +13,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'default-secret-key')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 # Allowed hosts configuration
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost mobilebackend-oj3w.onrender.com').split()
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost mobilebackend-oj3w.onrender.com").split(" ")
 
 # Application definition
 INSTALLED_APPS = [
@@ -123,6 +123,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = [
     "https://mobilebackend-oj3w.onrender.com",
 ]
+
 CORS_ALLOW_HEADERS = list(default_headers) + [
     'content-disposition',
 ]
