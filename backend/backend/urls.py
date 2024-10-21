@@ -19,5 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('mobile/', include('mobile_.urls')),  # include the correct path to your app's URLs
+    path('', include('mobile_.urls')),  # include the correct path to your app's URLs
 ]
