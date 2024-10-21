@@ -1,13 +1,12 @@
 import os
 from pathlib import Path
 from corsheaders.defaults import default_headers
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'default-secret-key')
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
@@ -25,14 +24,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'mobile_',  # Custom app
+    'mobile_',  # Your custom app
     'rest_framework.authtoken',
 ]
 
 # Middleware definition
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static file handling in production
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files handling in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,29 +64,20 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Custom user model
 AUTH_USER_MODEL = 'mobile_.User'
 
-# Database configuration
+# Database configuration using environment variables
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME', 'postgres'),  # Database name
-        'USER': os.environ.get('DB_USER', 'postgres.yipadqrauctbnbdbnmxu'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'mlekwa@@123'),
-        'HOST': os.environ.get('DB_HOST', 'aws-0-us-east-1.pooler.supabase.com'),
-        'PORT': os.environ.get('DB_PORT', '6543'),
+        'NAME': os.environ.get('DB_NAME', 'postgres'),
+        'USER': os.environ.get('DB_USER', 'postgres_user'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'your-password'),
+        'HOST': os.environ.get('DB_HOST', 'db-host'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
         'OPTIONS': {
             'sslmode': 'require',
         },
     }
 }
-
-# Email configuration
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'your-email@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'your-email-password')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'your-email@gmail.com')
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -120,10 +110,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS configuration
-CORS_ALLOWED_ORIGINS = [
-    "https://mobilebackend-oj3w.onrender.com",
-]
-
+CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "https://mobilebackend-oj3w.onrender.com").split(" ")
 CORS_ALLOW_HEADERS = list(default_headers) + [
     'content-disposition',
 ]
@@ -140,7 +127,7 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Logging configuration
+# Logging configuration for better tracking in production
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -156,3 +143,6 @@ LOGGING = {
         },
     },
 }
+
+# Port binding for Render
+PORT = os.environ.get('PORT', '8000')
