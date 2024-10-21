@@ -13,7 +13,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-default-secret-key')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 # Define allowed hosts from environment or default to a specific list
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost mobilebackend-oj3w.onrender.com').split(" ")  # Change to your domain
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost mobilebackend-oj3w.onrender.com').split(" ")
 
 # Application definition
 INSTALLED_APPS = [
@@ -24,9 +24,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',  # Ensure CORS is listed before the middleware that requires it
     'mobile_',  # Ensure this is the correct app name
     'rest_framework.authtoken',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -34,7 +34,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',  # For static file handling in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # CORS middleware
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -69,10 +69,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.environ.get('DB_NAME', 'postgres'),
-        'USER': os.environ.get('DB_USER', 'postgres.yipadqrauctbnbdbnmxu'),  # Ensure this is correct
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'mlekwa@@123'),  # Avoid hardcoding
+        'USER': os.environ.get('DB_USER', 'postgres.yipadqrauctbnbdbnmxu'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'mlekwa@@123'),
         'HOST': os.environ.get('DB_HOST', 'aws-0-us-east-1.pooler.supabase.com'),
-        'PORT': os.environ.get('DB_PORT', '6543'),  # Adjust if using a different port
+        'PORT': os.environ.get('DB_PORT', '6543'),
         'OPTIONS': {
             'sslmode': 'require',
         }
@@ -84,8 +84,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'your-email@gmail.com')  # Ensure this is correct
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'your-email-password')  # Avoid hardcoding
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'your-email@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'your-email-password')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'your-email@gmail.com')
 
 # Password validation
@@ -103,13 +103,16 @@ USE_I18N = True
 USE_TZ = True
 
 # CORS settings
-CORS_ALLOW_ALL_ORIGINS = True  # Change this in production for security
+CORS_ALLOW_ALL_ORIGINS = False  # Set to True only for local development
+CORS_ALLOWED_ORIGINS = [
+    "https://mobilebackend-oj3w.onrender.com"
+]
 CORS_ALLOW_HEADERS = list(default_headers) + ['content-disposition']
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (Uploaded files)
 MEDIA_URL = '/media/'
