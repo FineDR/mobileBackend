@@ -13,7 +13,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-default-secret-key')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 # Define allowed hosts from environment or default to a specific list
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'mobilebackend-oj3w.onrender.com').split()  # Change to your domain
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost mobilebackend-oj3w.onrender.com').split(" ")  # Change to your domain
 
 # Application definition
 INSTALLED_APPS = [
