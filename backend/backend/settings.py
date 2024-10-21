@@ -6,7 +6,7 @@ from corsheaders.defaults import default_headers
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-secret-key')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
@@ -144,5 +144,5 @@ LOGGING = {
     },
 }
 
-# Port binding for Render (uncomment if needed)
+# Uncomment this if needed for Render's port binding
 # PORT = os.environ.get('PORT', '8000')
